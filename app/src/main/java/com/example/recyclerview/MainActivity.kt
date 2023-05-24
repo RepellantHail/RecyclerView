@@ -2,6 +2,8 @@ package com.example.recyclerview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +23,8 @@ class MainActivity : AppCompatActivity() {
         miLayoutManager = LinearLayoutManager(this)
         miAdapter = MyAdapter(names, R.layout.recycler_view_item, object :MyAdapter.OnItemClickListener{
             override fun onItemClick(name: String?, position: Int) {
-                Toast.makeText(this@MainActivity, name+"-"+position, Toast.LENGTH_LONG).show()
+                //Toast.makeText(this@MainActivity, name+"-"+position, Toast.LENGTH_LONG).show()
+                deleteName(position)
             }
         })
         miRecyclerView.setLayoutManager(miLayoutManager)
@@ -45,7 +48,33 @@ class MainActivity : AppCompatActivity() {
                 add("Sofia")
                 add("Inés")
                 add("Norma")
+                add("Claudia")
+                add("Jennifer")
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_add,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            R.id.add_name -> addName(0)
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun addName(posicion: Int):Boolean{
+        names.add(posicion,"New Name"+(++counter))
+        miAdapter.notifyItemInserted(posicion)
+        miLayoutManager.scrollToPosition(posicion)
+        return true
+    }
+
+    private fun deleteName(posicion: Int){
+        names.removeAt(posicion)
+        miAdapter.notifyItemRemoved(posicion)
     }
 }
